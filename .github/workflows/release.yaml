@@ -46,6 +46,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            AUTH_USER=${{ secrets.RELEASE_AUTH_USER }}
+            AUTH_PASS=${{ secrets.RELEASE_AUTH_PASS }}
             MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}
             PREDICTION_SERVICE_MQTT_USERNAME=${{ secrets.RELEASE_PREDICTION_SERVICE_MQTT_USERNAME }}
             PREDICTION_SERVICE_MQTT_PASSWORD=${{ secrets.RELEASE_PREDICTION_SERVICE_MQTT_PASSWORD }}
