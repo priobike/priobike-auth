@@ -5,13 +5,14 @@ ARG AUTH_USER=test
 ARG AUTH_PASS=test
 
 # Tokens and other passwords for the app
-ARG MAPBOX_TOKEN=test
+ARG MAPBOX_ACCESS_TOKEN=test
 ARG PREDICTION_SERVICE_MQTT_USERNAME=test
 ARG PREDICTION_SERVICE_MQTT_PASSWORD=test
 ARG PREDICTOR_MQTT_USERNAME=test
 ARG PREDICTOR_MQTT_PASSWORD=test
 ARG SIMULATOR_MQTT_PUBLISH_USERNAME=test
 ARG SIMULATOR_MQTT_PUBLISH_PASSWORD=test
+ARG LINK_SHORTENER_API_KEY=test
 
 # Install htpasswd
 RUN apt-get update && apt-get install -y apache2-utils
@@ -22,11 +23,12 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Create config file for the app
 RUN echo "{ \
-\"mapboxToken\": \"$MAPBOX_TOKEN\", \
+\"mapboxAccessToken\": \"$MAPBOX_ACCESS_TOKEN\", \
 \"predictionServiceMQTTUsername\": \"${PREDICTION_SERVICE_MQTT_USERNAME}\", \
 \"predictionServiceMQTTPassword\": \"${PREDICTION_SERVICE_MQTT_PASSWORD}\", \
 \"predictorMQTTUsername\": \"${PREDICTOR_MQTT_USERNAME}\", \
 \"predictorMQTTPassword\": \"${PREDICTOR_MQTT_PASSWORD}\", \
-\"simulatorMQTTPublishUsername\": \"${SIMULATOR_MQTT_PUBLISH_USERNAME}\" \
+\"simulatorMQTTPublishUsername\": \"${SIMULATOR_MQTT_PUBLISH_USERNAME}\", \
 \"simulatorMQTTPublishPassword\": \"${SIMULATOR_MQTT_PUBLISH_PASSWORD}\", \
+\"linkShortenerApiKey\": \"${LINK_SHORTENER_API_KEY}\" \
 }" > /etc/nginx/config.json
