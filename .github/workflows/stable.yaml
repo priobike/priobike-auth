@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - stable
+    tags:
+      - v*
+
+env:
+  REGISTRY: bikenow.vkw.tu-dresden.de
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  publish:
+    runs-on: self-hosted
+    container: docker:latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+          password: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker image
+        id: meta
+        # See: https://github.com/docker/metadata-action
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}
+            PREDICTION_SERVICE_MQTT_USERNAME=${{ secrets.PRODUCTION_PREDICTION_SERVICE_MQTT_USERNAME }}
+            PREDICTION_SERVICE_MQTT_PASSWORD=${{ secrets.PRODUCTION_PREDICTION_SERVICE_MQTT_PASSWORD }}
+            PREDICTOR_MQTT_USERNAME=${{ secrets.PRODUCTION_PREDICTOR_MQTT_USERNAME }}
+            PREDICTOR_MQTT_PASSWORD=${{ secrets.PRODUCTION_PREDICTOR_MQTT_PASSWORD }}
+            SIMULATOR_MQTT_PUBLISH_USERNAME=${{ secrets.PRODUCTION_SIMULATOR_MQTT_PUBLISH_USERNAME }}
+            SIMULATOR_MQTT_PUBLISH_PASSWORD=${{ secrets.PRODUCTION_SIMULATOR_MQTT_PUBLISH_PASSWORD }}

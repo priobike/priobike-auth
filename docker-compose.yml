@@ -1,0 +1,8 @@
+services:
+  auth:
+    build: 
+      context: .
+    ports:
+      - "80:80"
+    # Start nginx with debug logs
+    command: [nginx-debug, '-g', 'daemon off;']
