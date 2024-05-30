@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - stable
-    tags:
-      - v*
 
 env:
   REGISTRY: bikenow.vkw.tu-dresden.de
